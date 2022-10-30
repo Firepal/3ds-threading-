@@ -1,0 +1,59 @@
+#ifndef _MUTEX3DS
+#define _MUTEX3DS
+#include <3ds.h>
+
+namespace std {
+    class recursive_mutex {
+        private:
+            RecursiveLock _mutex3ds;
+
+        public:
+            recursive_mutex(const recursive_mutex&) = delete;
+            recursive_mutex& operator=(const recursive_mutex&) = delete;
+
+            void lock() {
+                RecursiveLock_Lock(&_mutex3ds);
+            }
+
+            bool try_lock() {
+                return RecursiveLock_TryLock(&_mutex3ds) == 0;
+            }
+
+            void unlock() {
+                RecursiveLock_Unlock(&_mutex3ds);
+            }
+
+            recursive_mutex() {
+                RecursiveLock_Init(&_mutex3ds);
+            };
+            ~recursive_mutex() = default;
+
+    };
+
+    class mutex {
+        public:
+            LightLock _mutex3ds;
+
+            mutex(const mutex&) = delete;
+            mutex& operator=(const mutex&) = delete;
+
+            void lock() {
+                LightLock_Lock(&_mutex3ds);
+            }
+
+            bool try_lock() {
+                return LightLock_TryLock(&_mutex3ds) == 0;
+            }
+
+            void unlock() {
+                LightLock_Unlock(&_mutex3ds);
+            }
+
+            mutex() {
+                LightLock_Init(&_mutex3ds);
+            };
+            ~mutex() = default;
+
+    };
+}
+#endif // _MUTEX3DS
